@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Analíticas · Flomunity</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg:         #FFFFFF;
+      --bg-soft:    #F7F7F8;
+      --bg-muted:   #EFEFEF;
+      --card:       #FFFFFF;
+      --text:       #0D0D0D;
+      --text-muted: #6B7280;
+      --text-light: #9CA3AF;
+      --border:     rgba(0,0,0,0.07);
+      --shadow-sm:  0 1px 4px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
+      --shadow-md:  0 4px 24px rgba(0,0,0,0.10), 0 1px 4px rgba(0,0,0,0.04);
+      --radius:     16px;
+      --radius-sm:  10px;
+      --radius-pill:999px;
+      --pink:   #FFD1DC;
+      --orange: #FFA500;
+      --cyan:   #00CCCC;
+    }
+
+    body {
+      background: var(--bg-soft);
+      color: var(--text);
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── NAVBAR ── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 5%; height: 60px; background: #000;
+    }
+
+    .nav-logo { font-size: 1.35rem; font-weight: 800; letter-spacing: -0.5px; color: #fff; }
+    .nav-logo span { color: #FFD1DC; }
+
+    .nav-links { display: flex; gap: .25rem; list-style: none; }
+    .nav-links a {
+      text-decoration: none; color: rgba(255,255,255,.55);
+      font-size: .85rem; font-weight: 500;
+      padding: .4rem .85rem; border-radius: var(--radius-pill); transition: all .15s;
+    }
+    .nav-links a:hover { color: #fff; background: rgba(255,255,255,.08); }
+    .nav-links a.active { color: #fff; background: rgba(255,255,255,.12); }
+
+    .nav-right { display: flex; align-items: center; gap: .75rem; }
+    .nav-avatar {
+      width: 34px; height: 34px; border-radius: 50%;
+      background: linear-gradient(135deg,#FFD1DC,#00CCCC);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: .75rem; color: #000; cursor: pointer;
+    }
+    .btn-icon {
+      width: 34px; height: 34px; border-radius: 50%; border: none;
+      background: rgba(255,255,255,.1); color: #fff; font-size: 1rem;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: background .15s;
+    }
+    .btn-icon:hover { background: rgba(255,255,255,.18); }
+    .hamburger { display:none; flex-direction:column; gap:4px; cursor:pointer; background:none; border:none; padding:4px; }
+    .hamburger span { width:20px; height:2px; background:#fff; border-radius:2px; display:block; }
+
+    .mobile-menu {
+      display:none; flex-direction:column; position:fixed;
+      top:60px; left:0; right:0; background:#000;
+      padding:1rem 5%; z-index:99; gap:.25rem;
+    }
+    .mobile-menu.open { display:flex; }
+    .mobile-menu a { text-decoration:none; color:rgba(255,255,255,.6); font-size:.9rem; padding:.6rem .5rem; border-radius:8px; }
+    .mobile-menu a.active { color:#fff; background:rgba(255,255,255,.08); }
+
+    /* ── PAGE ── */
+    .page { padding: 2rem 5% 4rem; max-width: 1280px; margin: 0 auto; }
+
+    .page-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 1.75rem; flex-wrap: wrap; gap: 1rem;
+    }
+    .page-header h1 { font-size: clamp(1.3rem,2.5vw,1.9rem); font-weight: 800; letter-spacing: -.5px; }
+    .page-header p  { font-size: .85rem; color: var(--text-muted); margin-top: .2rem; }
+
+    .period-selector {
+      display: flex; gap: .35rem; background: var(--bg-muted);
+      border-radius: var(--radius-pill); padding: .3rem;
+    }
+    .period-btn {
+      padding: .35rem .9rem; border-radius: var(--radius-pill); border: none;
+      background: transparent; font-size: .78rem; font-weight: 500;
+      color: var(--text-muted); cursor: pointer; font-family: inherit; transition: all .15s;
+    }
+    .period-btn.active { background: #fff; color: var(--text); font-weight: 600; box-shadow: 0 1px 4px rgba(0,0,0,.1); }
+
+    /* ── CARDS ── */
+    .block {
+      background: var(--card); border-radius: var(--radius);
+      box-shadow: var(--shadow-sm); border: 1px solid var(--border); overflow: hidden;
+    }
+
+    .block-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.25rem 1.4rem .75rem;
+    }
+    .block-title { font-size: 1rem; font-weight: 700; letter-spacing: -.2px; }
+    .block-sub   { font-size: .75rem; color: var(--text-muted); margin-top: .15rem; }
+
+    .link-sm { font-size:.78rem; color:var(--text-muted); text-decoration:none; font-weight:500; transition:color .15s; }
+    .link-sm:hover { color:var(--text); }
+
+    /* ── KPI ROW ── */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4,1fr);
+      gap: 1rem; margin-bottom: 1.5rem;
+    }
+
+    .kpi-card {
+      background: var(--card); border-radius: var(--radius);
+      box-shadow: var(--shadow-sm); border: 1px solid var(--border);
+      padding: 1.1rem 1.25rem; position: relative; overflow: hidden;
+      transition: box-shadow .2s, transform .2s;
+    }
+    .kpi-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+
+    .kpi-label  { font-size: .72rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: .4rem; }
+    .kpi-value  { font-size: 1.75rem; font-weight: 800; letter-spacing: -1.2px; line-height: 1; }
+    .kpi-change {
+      display: inline-flex; align-items: center; gap: .2rem;
+      font-size: .72rem; font-weight: 600; margin-top: .35rem;
+      padding: .15rem .5rem; border-radius: var(--radius-pill);
+    }
+    .kpi-change.up   { background: #fff0f2; color: #c0334a; }
+    .kpi-change.down { background: #e8f9ee; color: #00873a; }
+    .kpi-change.flat { background: var(--bg-muted); color: var(--text-muted); }
+
+    .kpi-accent {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      height: 3px; border-radius: 0 0 var(--radius) var(--radius);
+    }
+
+    /* ── MAIN GRID ── */
+    .main-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem; }
+
+    /* ── BAR CHART ── */
+    .chart-wrap { padding: .5rem 1.4rem 1.25rem; }
+    .bar-chart  { width: 100%; height: 180px; }
+
+    .bar-chart-labels {
+      display: flex; justify-content: space-around;
+      padding: .4rem 0 0; font-size: .72rem; color: var(--text-muted);
+    }
+
+    /* ── DONUT CHART ── */
+    .donut-wrap {
+      display: flex; align-items: center; gap: 1.5rem;
+      padding: .5rem 1.4rem 1.25rem;
+    }
+    .donut-svg { flex-shrink: 0; }
+    .donut-legend { flex: 1; display: flex; flex-direction: column; gap: .65rem; }
+    .legend-item { display: flex; align-items: center; gap: .6rem; font-size: .8rem; }
+    .legend-dot  { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .legend-name { flex: 1; color: var(--text-muted); }
+    .legend-val  { font-weight: 700; }
+    .legend-pct  { font-size: .7rem; color: var(--text-light); }
+
+    /* ── SUB BREAKDOWN TABLE ── */
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; }
+    thead th {
+      text-align: left; font-size: .72rem; font-weight: 600; color: var(--text-muted);
+      text-transform: uppercase; letter-spacing: .06em;
+      padding: .6rem 1.4rem; border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    tbody tr { transition: background .12s; cursor: pointer; }
+    tbody tr:hover { background: var(--bg-soft); }
+    tbody td {
+      padding: .85rem 1.4rem; font-size: .85rem;
+      border-bottom: 1px solid var(--border);
+    }
+    tbody tr:last-child td { border-bottom: none; }
+
+    .td-service { display: flex; align-items: center; gap: .7rem; }
+    .td-icon {
+      width: 32px; height: 32px; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: .75rem; font-weight: 800; color: #fff; flex-shrink: 0;
+    }
+    .td-name   { font-weight: 600; }
+    .td-plan   { font-size: .7rem; color: var(--text-muted); }
+    .td-num    { font-weight: 600; }
+    .td-muted  { color: var(--text-muted); font-size: .8rem; }
+
+    .badge {
+      display: inline-block; font-size: .65rem; font-weight: 600;
+      padding: .18rem .55rem; border-radius: var(--radius-pill);
+      text-transform: uppercase; letter-spacing: .04em;
+    }
+    .badge.active { background: #e8f9ee; color: #00873a; }
+    .badge.trial  { background: #fff3e0; color: #e07800; }
+    .badge.paused { background: var(--bg-muted); color: var(--text-muted); }
+
+    .cost-bar-wrap { width: 80px; background: var(--bg-muted); border-radius: 3px; height: 5px; }
+    .cost-bar      { height: 100%; border-radius: 3px; background: #0D0D0D; }
+
+    /* ── INSIGHTS ── */
+    .insights-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1rem; margin-bottom: 1.5rem; }
+
+    .insight-card {
+      background: var(--card); border-radius: var(--radius);
+      box-shadow: var(--shadow-sm); border: 1px solid var(--border);
+      padding: 1.25rem; transition: box-shadow .2s, transform .2s;
+    }
+    .insight-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+
+    .insight-icon { font-size: 1.6rem; margin-bottom: .65rem; }
+    .insight-title { font-size: .88rem; font-weight: 700; margin-bottom: .3rem; }
+    .insight-body  { font-size: .78rem; color: var(--text-muted); line-height: 1.5; }
+    .insight-tag   {
+      display: inline-block; margin-top: .75rem;
+      font-size: .7rem; font-weight: 600; padding: .2rem .6rem;
+      border-radius: var(--radius-pill);
+    }
+    .tag-warn   { background: #fff3e0; color: #e07800; }
+    .tag-save   { background: #e8f9ee; color: #00873a; }
+    .tag-info   { background: #eaf4ff; color: #1a6fbd; }
+
+    /* ── MONTHLY TREND (line sparklines) ── */
+    .trend-row  { display: flex; gap: 1rem; padding: .5rem 1.4rem 1.25rem; flex-wrap: wrap; }
+    .trend-item { flex: 1; min-width: 120px; }
+    .trend-label { font-size: .72rem; color: var(--text-muted); margin-bottom: .3rem; }
+    .trend-val   { font-size: 1.15rem; font-weight: 800; letter-spacing: -.5px; }
+    .trend-sub   { font-size: .7rem; color: var(--text-muted); margin-top: .1rem; }
+
+    /* ── FOOTER ── */
+    footer {
+      text-align: center; padding: 2rem 5%; font-size: .72rem;
+      color: var(--text-light); border-top: 1px solid var(--border); margin-top: .5rem;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 1024px) {
+      .insights-grid { grid-template-columns: repeat(2,1fr); }
+    }
+    @media (max-width: 860px) {
+      .kpi-grid { grid-template-columns: repeat(2,1fr); }
+      .main-grid { grid-template-columns: 1fr; }
+      .insights-grid { grid-template-columns: repeat(2,1fr); }
+    }
+    @media (max-width: 640px) {
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+      .kpi-grid { grid-template-columns: repeat(2,1fr); gap: .75rem; }
+      .insights-grid { grid-template-columns: 1fr; }
+      .page { padding: 1.25rem 4% 3rem; }
+      .donut-wrap { flex-direction: column; align-items: flex-start; }
+      .period-selector { display: none; }
+      thead th:nth-child(4), tbody td:nth-child(4),
+      thead th:nth-child(5), tbody td:nth-child(5) { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav>
+  <div class="nav-logo">Flo<span>munity</span></div>
+  <ul class="nav-links">
+    <li><a href="index.html">Inicio</a></li>
+    <li><a href="#">Descubrir</a></li>
+    <li><a href="analytics.html" class="active">Analíticas</a></li>
+    <li><a href="#">Configuración</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="btn-icon" title="Notificaciones">🔔</button>
+    <div class="nav-avatar">TR</div>
+    <button class="hamburger" onclick="toggleMenu()" aria-label="Menú">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="index.html">Inicio</a>
+  <a href="#">Descubrir</a>
+  <a href="analytics.html" class="active">Analíticas</a>
+  <a href="#">Configuración</a>
+</div>
+
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="page-header">
+    <div>
+      <h1>Analíticas</h1>
+      <p>Resumen de tus suscripciones y hábitos de gasto</p>
+    </div>
+    <div class="period-selector">
+      <button class="period-btn" onclick="setPeriod(this)">3M</button>
+      <button class="period-btn active" onclick="setPeriod(this)">6M</button>
+      <button class="period-btn" onclick="setPeriod(this)">12M</button>
+    </div>
+  </div>
+
+  <!-- KPI CARDS -->
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-label">Gasto mensual</div>
+      <div class="kpi-value">€84,97</div>
+      <div class="kpi-change up">↑ €6,99 vs mes anterior</div>
+      <div class="kpi-accent" style="background:#FFD1DC"></div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Gasto anual proyectado</div>
+      <div class="kpi-value">€1.019</div>
+      <div class="kpi-change up">↑ €84 vs año anterior</div>
+      <div class="kpi-accent" style="background:#FFA500"></div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Coste medio / suscripción</div>
+      <div class="kpi-value">€10,62</div>
+      <div class="kpi-change down">↓ €0,40 vs mes anterior</div>
+      <div class="kpi-accent" style="background:#00CCCC"></div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Suscripciones activas</div>
+      <div class="kpi-value">8</div>
+      <div class="kpi-change flat">→ Sin cambios</div>
+      <div class="kpi-accent" style="background:#0D0D0D"></div>
+    </div>
+  </div>
+
+  <!-- BAR + DONUT ROW -->
+  <div class="main-grid" style="margin-bottom:1.5rem">
+
+    <!-- BAR CHART: Evolución mensual -->
+    <div class="block">
+      <div class="block-header">
+        <div>
+          <div class="block-title">Evolución mensual</div>
+          <div class="block-sub">Gasto total por mes · últimos 6 meses</div>
+        </div>
+      </div>
+      <div class="chart-wrap">
+        <svg class="bar-chart" id="barChart" viewBox="0 0 520 180" preserveAspectRatio="none"></svg>
+        <div class="bar-chart-labels" id="barLabels"></div>
+      </div>
+    </div>
+
+    <!-- DONUT CHART: Categorías -->
+    <div class="block">
+      <div class="block-header">
+        <div>
+          <div class="block-title">Gasto por categoría</div>
+          <div class="block-sub">Distribución del gasto mensual</div>
+        </div>
+      </div>
+      <div class="donut-wrap">
+        <svg class="donut-svg" id="donutChart" width="140" height="140" viewBox="0 0 140 140"></svg>
+        <div class="donut-legend" id="donutLegend"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- INSIGHTS -->
+  <div class="insights-grid">
+    <div class="insight-card">
+      <div class="insight-icon">⚠️</div>
+      <div class="insight-title">Pruebas próximas a vencer</div>
+      <div class="insight-body">Twitch Turbo y Tidal HiFi Plus están en período de prueba. Si no los cancelas antes del 17 y 22 de abril, se cobrarán <strong>€19,98/mes</strong> adicionales.</div>
+      <span class="insight-tag tag-warn">Acción recomendada</span>
+    </div>
+    <div class="insight-card">
+      <div class="insight-icon">💡</div>
+      <div class="insight-title">Posible ahorro: Música</div>
+      <div class="insight-body">Tienes Spotify y Tidal activos a la vez (€21,98/mes). Considera quedarte con uno. Ahorro potencial de hasta <strong>€131,88/año</strong>.</div>
+      <span class="insight-tag tag-save">Ahorro potencial</span>
+    </div>
+    <div class="insight-card">
+      <div class="insight-icon">📊</div>
+      <div class="insight-title">Adobe CC: mayor coste</div>
+      <div class="insight-body">Adobe CC representa el <strong>35,3%</strong> de tu gasto total. Evalúa si usas todas las apps incluidas o si un plan más básico cubriría tus necesidades.</div>
+      <span class="insight-tag tag-info">Revisión sugerida</span>
+    </div>
+  </div>
+
+  <!-- DETAILED TABLE -->
+  <div class="block" style="margin-bottom:1.5rem">
+    <div class="block-header">
+      <div>
+        <div class="block-title">Detalle de suscripciones</div>
+        <div class="block-sub">Coste mensual, categoría y estado</div>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Servicio</th>
+            <th>Categoría</th>
+            <th>Mensual</th>
+            <th>Anual</th>
+            <th>% del gasto</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody id="subTable"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- TREND METRICS -->
+  <div class="block">
+    <div class="block-header">
+      <div class="block-title">Métricas de los últimos 6 meses</div>
+    </div>
+    <div class="trend-row">
+      <div class="trend-item">
+        <div class="trend-label">Gasto acumulado</div>
+        <div class="trend-val">€484,90</div>
+        <div class="trend-sub">Oct 2025 – Mar 2026</div>
+      </div>
+      <div class="trend-item">
+        <div class="trend-label">Mes más caro</div>
+        <div class="trend-val">€84,97</div>
+        <div class="trend-sub">Marzo 2026</div>
+      </div>
+      <div class="trend-item">
+        <div class="trend-label">Mes más barato</div>
+        <div class="trend-val">€71,98</div>
+        <div class="trend-sub">Oct – Nov 2025</div>
+      </div>
+      <div class="trend-item">
+        <div class="trend-label">Nuevas suscripciones</div>
+        <div class="trend-val">+2</div>
+        <div class="trend-sub">Twitch, Tidal (prueba)</div>
+      </div>
+      <div class="trend-item">
+        <div class="trend-label">Suscripciones canceladas</div>
+        <div class="trend-val">0</div>
+        <div class="trend-sub">Sin cancelaciones</div>
+      </div>
+      <div class="trend-item">
+        <div class="trend-label">Variación total</div>
+        <div class="trend-val" style="color:#c0334a">+€12,99</div>
+        <div class="trend-sub">vs hace 6 meses</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>© 2026 Flomunity · Gestiona tus suscripciones de forma inteligente</footer>
+
+<script>
+  /* ── DATA ── */
+  const subs = [
+    { name:'Netflix',   plan:'Plan Estándar · 2 pantallas',  cat:'Entretenimiento', price:15.99, icon:'N',  color:'#E50914', status:'active' },
+    { name:'Adobe CC',  plan:'Individual · Todas las apps',  cat:'Software',        price:29.99, icon:'Ai', color:'#FF4400', status:'active' },
+    { name:'Disney+',   plan:'Plan Premium',                 cat:'Entretenimiento', price:13.99, icon:'D+', color:'#00A8E1', status:'active' },
+    { name:'Spotify',   plan:'Premium Individual',           cat:'Música',          price:10.99, icon:'S',  color:'#1DB954', status:'active' },
+    { name:'Tidal',     plan:'HiFi Plus',                    cat:'Música',          price:10.99, icon:'Ti', color:'#FA243C', status:'trial'  },
+    { name:'Twitch',    plan:'Turbo',                        cat:'Entretenimiento', price:8.99,  icon:'Tw', color:'#9146FF', status:'trial'  },
+    { name:'Notion',    plan:'Plus · Uso personal',          cat:'Software',        price:9.60,  icon:'No', color:'#000000', status:'active' },
+    { name:'Duolingo',  plan:'Super · Sin anuncios',         cat:'Otros',           price:6.99,  icon:'Du', color:'#58CC02', status:'paused' },
+  ];
+
+  const total = subs.reduce((s,x)=>s+x.price,0);
+
+  const monthly = [
+    { label:'Oct', val:71.98 },
+    { label:'Nov', val:71.98 },
+    { label:'Dic', val:77.97 },
+    { label:'Ene', val:77.97 },
+    { label:'Feb', val:77.98 },
+    { label:'Mar', val:84.97 },
+  ];
+
+  const cats = [
+    { name:'Entretenimiento', color:'#FFD1DC', amount: subs.filter(s=>s.cat==='Entretenimiento').reduce((a,s)=>a+s.price,0) },
+    { name:'Software',        color:'#00CCCC', amount: subs.filter(s=>s.cat==='Software').reduce((a,s)=>a+s.price,0) },
+    { name:'Música',          color:'#FFA500', amount: subs.filter(s=>s.cat==='Música').reduce((a,s)=>a+s.price,0) },
+    { name:'Otros',           color:'#CCCCCC', amount: subs.filter(s=>s.cat==='Otros').reduce((a,s)=>a+s.price,0) },
+  ];
+
+  /* ── BAR CHART ── */
+  function drawBar() {
+    const svg = document.getElementById('barChart');
+    const labels = document.getElementById('barLabels');
+    const max = Math.max(...monthly.map(m=>m.val)) * 1.15;
+    const W = 520, H = 180, padL = 10, padR = 10, padT = 10, padB = 4;
+    const chartH = H - padT - padB;
+    const barW = 44, gap = (W - padL - padR - monthly.length * barW) / (monthly.length - 1);
+
+    let html = '';
+    labels.innerHTML = '';
+
+    monthly.forEach((m, i) => {
+      const x = padL + i * (barW + gap);
+      const bH = (m.val / max) * chartH;
+      const y = padT + chartH - bH;
+      const isLast = i === monthly.length - 1;
+      const fill = isLast ? '#0D0D0D' : '#EFEFEF';
+      const textFill = isLast ? '#fff' : '#9CA3AF';
+
+      html += `<rect x="${x}" y="${y}" width="${barW}" height="${bH}" rx="6" fill="${fill}"/>`;
+      html += `<text x="${x + barW/2}" y="${y - 6}" text-anchor="middle" font-size="11" font-weight="700" fill="${isLast ? '#0D0D0D' : '#9CA3AF'}" font-family="system-ui">€${m.val.toFixed(0)}</text>`;
+
+      const lbl = document.createElement('span');
+      lbl.textContent = m.label;
+      lbl.style.fontWeight = isLast ? '700' : '400';
+      lbl.style.color = isLast ? '#0D0D0D' : '';
+      labels.appendChild(lbl);
+    });
+
+    svg.innerHTML = html;
+  }
+
+  /* ── DONUT CHART ── */
+  function drawDonut() {
+    const svg = document.getElementById('donutChart');
+    const legend = document.getElementById('donutLegend');
+    const cx = 70, cy = 70, R = 54, r = 34;
+    const tau = 2 * Math.PI;
+    let start = -Math.PI / 2;
+    let paths = '';
+
+    cats.forEach(c => {
+      const pct = c.amount / total;
+      const angle = pct * tau;
+      const end = start + angle;
+      const x1 = cx + R * Math.cos(start), y1 = cy + R * Math.sin(start);
+      const x2 = cx + R * Math.cos(end),   y2 = cy + R * Math.sin(end);
+      const x3 = cx + r * Math.cos(end),   y3 = cy + r * Math.sin(end);
+      const x4 = cx + r * Math.cos(start), y4 = cy + r * Math.sin(start);
+      const large = angle > Math.PI ? 1 : 0;
+      paths += `<path d="M${x1},${y1} A${R},${R} 0 ${large},1 ${x2},${y2} L${x3},${y3} A${r},${r} 0 ${large},0 ${x4},${y4} Z" fill="${c.color}" stroke="#fff" stroke-width="2"/>`;
+      start = end;
+    });
+
+    paths += `<text x="${cx}" y="${cy - 6}" text-anchor="middle" font-size="15" font-weight="800" font-family="system-ui" fill="#0D0D0D">€${total.toFixed(0)}</text>`;
+    paths += `<text x="${cx}" y="${cy + 10}" text-anchor="middle" font-size="10" font-family="system-ui" fill="#9CA3AF">/mes</text>`;
+    svg.innerHTML = paths;
+
+    legend.innerHTML = cats.map(c => `
+      <div class="legend-item">
+        <div class="legend-dot" style="background:${c.color}"></div>
+        <div class="legend-name">${c.name}</div>
+        <div class="legend-val">€${c.amount.toFixed(2)}</div>
+        <div class="legend-pct">${((c.amount/total)*100).toFixed(0)}%</div>
+      </div>`).join('');
+  }
+
+  /* ── TABLE ── */
+  function drawTable() {
+    const tbody = document.getElementById('subTable');
+    const statusLabel = { active:'Activa', trial:'Prueba', paused:'Pausada' };
+    const sorted = [...subs].sort((a,b) => b.price - a.price);
+    tbody.innerHTML = sorted.map(s => {
+      const pct = (s.price / total * 100).toFixed(1);
+      const barW = Math.round(s.price / total * 100);
+      return `
+        <tr>
+          <td>
+            <div class="td-service">
+              <div class="td-icon" style="background:${s.color}">${s.icon}</div>
+              <div><div class="td-name">${s.name}</div><div class="td-plan">${s.plan}</div></div>
+            </div>
+          </td>
+          <td class="td-muted">${s.cat}</td>
+          <td class="td-num">€${s.price.toFixed(2)}</td>
+          <td class="td-num">€${(s.price*12).toFixed(2)}</td>
+          <td>
+            <div style="display:flex;align-items:center;gap:.5rem">
+              <div class="cost-bar-wrap"><div class="cost-bar" style="width:${barW}%"></div></div>
+              <span style="font-size:.72rem;color:var(--text-muted)">${pct}%</span>
+            </div>
+          </td>
+          <td><span class="badge ${s.status}">${statusLabel[s.status]}</span></td>
+        </tr>`;
+    }).join('');
+  }
+
+  /* ── PERIOD TOGGLE (visual only) ── */
+  function setPeriod(btn) {
+    document.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+
+  /* ── MOBILE MENU ── */
+  function toggleMenu() { document.getElementById('mobileMenu').classList.toggle('open'); }
+  document.addEventListener('click', e => {
+    const menu = document.getElementById('mobileMenu');
+    const ham  = document.querySelector('.hamburger');
+    if (!menu.contains(e.target) && !ham.contains(e.target)) menu.classList.remove('open');
+  });
+
+  /* ── INIT ── */
+  drawBar(); drawDonut(); drawTable();
+</script>
+</body>
+</html>

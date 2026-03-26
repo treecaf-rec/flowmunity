@@ -3,25 +3,25 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Flowmunity</title>
+  <title>Flomunity</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     :root {
-      --bg: #0d0d0d;
-      --bg2: #141414;
-      --bg3: #1a1a1a;
-      --card: #1e1e1e;
-      --card-hover: #252525;
-      --accent: #e50914;
-      --accent2: #ff1f2e;
-      --text: #e5e5e5;
-      --muted: #a0a0a0;
-      --border: #2a2a2a;
-      --green: #46d369;
-      --yellow: #f5c518;
-      --blue: #4a9eff;
-      --purple: #9f6ef5;
+      --bg: #000000;
+      --bg2: #080808;
+      --bg3: #111111;
+      --card: #111111;
+      --card-hover: #1a1a1a;
+      --accent: #FFD1DC;
+      --accent2: #FFA500;
+      --text: #FFFFFF;
+      --muted: #aaaaaa;
+      --border: #222222;
+      --green: #FFA500;
+      --yellow: #FFA500;
+      --blue: #00FFFF;
+      --purple: #FFD1DC;
     }
 
     body {
@@ -41,7 +41,7 @@
       justify-content: space-between;
       padding: 0 4%;
       height: 64px;
-      background: linear-gradient(to bottom, #000000cc, transparent);
+      background: linear-gradient(to bottom, #000000ee, transparent);
       backdrop-filter: blur(8px);
       border-bottom: 1px solid var(--border);
     }
@@ -82,7 +82,7 @@
       width: 36px;
       height: 36px;
       border-radius: 6px;
-      background: linear-gradient(135deg, var(--accent), var(--purple));
+      background: linear-gradient(135deg, #FFD1DC, #00FFFF);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -111,7 +111,7 @@
     /* ── HERO ── */
     .hero {
       padding: 3rem 4%;
-      background: linear-gradient(180deg, #0a0a0a 0%, var(--bg2) 100%);
+      background: linear-gradient(180deg, #000000 0%, var(--bg2) 100%);
     }
 
     .hero-greeting {
@@ -159,10 +159,10 @@
       height: 3px;
     }
 
-    .stat-card.red::before { background: var(--accent); }
-    .stat-card.green::before { background: var(--green); }
-    .stat-card.blue::before { background: var(--blue); }
-    .stat-card.purple::before { background: var(--purple); }
+    .stat-card.red::before { background: #FFD1DC; }
+    .stat-card.green::before { background: #FFA500; }
+    .stat-card.blue::before { background: #00FFFF; }
+    .stat-card.purple::before { background: linear-gradient(90deg, #FFD1DC, #FFA500); }
 
     .stat-card:hover {
       transform: translateY(-2px);
@@ -183,10 +183,10 @@
       letter-spacing: -1px;
     }
 
-    .stat-card.red .stat-value { color: var(--accent); }
-    .stat-card.green .stat-value { color: var(--green); }
-    .stat-card.blue .stat-value { color: var(--blue); }
-    .stat-card.purple .stat-value { color: var(--purple); }
+    .stat-card.red .stat-value { color: #FFD1DC; }
+    .stat-card.green .stat-value { color: #FFA500; }
+    .stat-card.blue .stat-value { color: #00FFFF; }
+    .stat-card.purple .stat-value { color: #FFA500; }
 
     .stat-sub {
       font-size: 0.75rem;
@@ -259,9 +259,9 @@
     }
 
     .tab.active {
-      background: var(--accent);
-      border-color: var(--accent);
-      color: #fff;
+      background: #FFD1DC;
+      border-color: #FFD1DC;
+      color: #000000;
       font-weight: 600;
     }
 
@@ -364,9 +364,9 @@
       letter-spacing: 0.05em;
     }
 
-    .badge.active { background: rgba(70,211,105,0.15); color: var(--green); }
-    .badge.trial  { background: rgba(245,197,24,0.15);  color: var(--yellow); }
-    .badge.paused { background: rgba(160,160,160,0.15); color: var(--muted); }
+    .badge.active { background: rgba(255,165,0,0.15); color: #FFA500; }
+    .badge.trial  { background: rgba(0,255,255,0.12); color: #00FFFF; }
+    .badge.paused { background: rgba(255,209,220,0.1); color: #FFD1DC; }
 
     /* ── UPCOMING ROW ── */
     .upcoming-list {
@@ -430,8 +430,8 @@
       font-weight: 600;
     }
 
-    .days-badge.soon  { background: rgba(229,9,20,0.15); color: var(--accent); }
-    .days-badge.later { background: rgba(74,158,255,0.15); color: var(--blue); }
+    .days-badge.soon  { background: rgba(255,209,220,0.15); color: #FFD1DC; }
+    .days-badge.later { background: rgba(0,255,255,0.12);   color: #00FFFF; }
 
     /* ── PROGRESS BAR ── */
     .spend-bar {
@@ -462,7 +462,7 @@
     .bar-fill {
       height: 100%;
       border-radius: 4px;
-      background: linear-gradient(90deg, var(--accent), var(--purple));
+      background: linear-gradient(90deg, #FFD1DC, #FFA500, #00FFFF);
       transition: width 0.8s ease;
     }
 
@@ -530,7 +530,7 @@
 
 <!-- NAVBAR -->
 <nav>
-  <div class="nav-logo">Flow<span>munity</span></div>
+  <div class="nav-logo">Flo<span>munity</span></div>
   <ul class="nav-links">
     <li><a href="#" class="active">Dashboard</a></li>
     <li><a href="#">Descubrir</a></li>
@@ -854,28 +854,28 @@
       <div class="cat-row">
         <div class="cat-name">Entretenimiento</div>
         <div class="cat-bar-wrap">
-          <div class="cat-bar" style="width:45%; background:var(--accent)"></div>
+          <div class="cat-bar" style="width:45%; background:#FFD1DC"></div>
         </div>
         <div class="cat-amount">€38,97</div>
       </div>
       <div class="cat-row">
         <div class="cat-name">Software</div>
         <div class="cat-bar-wrap">
-          <div class="cat-bar" style="width:47%; background:var(--blue)"></div>
+          <div class="cat-bar" style="width:47%; background:#00FFFF"></div>
         </div>
         <div class="cat-amount">€39,59</div>
       </div>
       <div class="cat-row">
         <div class="cat-name">Música</div>
         <div class="cat-bar-wrap">
-          <div class="cat-bar" style="width:26%; background:var(--green)"></div>
+          <div class="cat-bar" style="width:26%; background:#FFA500"></div>
         </div>
         <div class="cat-amount">€21,98</div>
       </div>
       <div class="cat-row">
         <div class="cat-name">Otros</div>
         <div class="cat-bar-wrap">
-          <div class="cat-bar" style="width:8%; background:var(--purple)"></div>
+          <div class="cat-bar" style="width:8%; background:#FFD1DC"></div>
         </div>
         <div class="cat-amount">€6,99</div>
       </div>
@@ -884,7 +884,7 @@
 </section>
 
 <footer>
-  © 2026 Flowmunity · Gestiona tus suscripciones de forma inteligente
+  © 2026 Flomunity · Gestiona tus suscripciones de forma inteligente
 </footer>
 
 <script>

@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Flowmunity</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #0d0d0d;
+      --bg2: #141414;
+      --bg3: #1a1a1a;
+      --card: #1e1e1e;
+      --card-hover: #252525;
+      --accent: #e50914;
+      --accent2: #ff1f2e;
+      --text: #e5e5e5;
+      --muted: #a0a0a0;
+      --border: #2a2a2a;
+      --green: #46d369;
+      --yellow: #f5c518;
+      --blue: #4a9eff;
+      --purple: #9f6ef5;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      min-height: 100vh;
+    }
+
+    /* ── NAVBAR ── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 4%;
+      height: 64px;
+      background: linear-gradient(to bottom, #000000cc, transparent);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      font-size: 1.6rem;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+      color: var(--accent);
+      text-transform: uppercase;
+    }
+
+    .nav-logo span { color: var(--text); }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: var(--muted);
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover, .nav-links a.active { color: var(--text); }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .nav-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 6px;
+      background: linear-gradient(135deg, var(--accent), var(--purple));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.875rem;
+      cursor: pointer;
+    }
+
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 4px;
+    }
+
+    .hamburger span {
+      width: 22px;
+      height: 2px;
+      background: var(--text);
+      border-radius: 2px;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      padding: 3rem 4%;
+      background: linear-gradient(180deg, #0a0a0a 0%, var(--bg2) 100%);
+    }
+
+    .hero-greeting {
+      font-size: 0.875rem;
+      color: var(--muted);
+      margin-bottom: 0.25rem;
+    }
+
+    .hero-title {
+      font-size: clamp(1.5rem, 3vw, 2.25rem);
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      margin-bottom: 0.5rem;
+    }
+
+    .hero-title span { color: var(--accent); }
+
+    .hero-subtitle {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    /* ── STATS ROW ── */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      padding: 0 4% 2rem;
+    }
+
+    .stat-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.25rem;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+    }
+
+    .stat-card.red::before { background: var(--accent); }
+    .stat-card.green::before { background: var(--green); }
+    .stat-card.blue::before { background: var(--blue); }
+    .stat-card.purple::before { background: var(--purple); }
+
+    .stat-card:hover {
+      transform: translateY(-2px);
+      border-color: #3a3a3a;
+    }
+
+    .stat-label {
+      font-size: 0.75rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-value {
+      font-size: 1.75rem;
+      font-weight: 800;
+      letter-spacing: -1px;
+    }
+
+    .stat-card.red .stat-value { color: var(--accent); }
+    .stat-card.green .stat-value { color: var(--green); }
+    .stat-card.blue .stat-value { color: var(--blue); }
+    .stat-card.purple .stat-value { color: var(--purple); }
+
+    .stat-sub {
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-top: 0.25rem;
+    }
+
+    /* ── SECTION TITLE ── */
+    .section {
+      padding: 0 4% 3rem;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.25rem;
+    }
+
+    .section-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .section-title .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    .see-all {
+      font-size: 0.8rem;
+      color: var(--muted);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      transition: color 0.2s;
+    }
+
+    .see-all:hover { color: var(--text); }
+
+    /* ── FILTER TABS ── */
+    .filter-tabs {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .tab {
+      padding: 0.4rem 1rem;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+
+    .tab:hover {
+      border-color: #444;
+      color: var(--text);
+    }
+
+    .tab.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+      font-weight: 600;
+    }
+
+    /* ── SUBSCRIPTION GRID ── */
+    .sub-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1rem;
+    }
+
+    .sub-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .sub-card:hover {
+      transform: scale(1.025);
+      border-color: #3a3a3a;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    }
+
+    .sub-card-top {
+      padding: 1.25rem;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .sub-info { flex: 1; }
+
+    .sub-logo {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+
+    .sub-name {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 0.2rem;
+    }
+
+    .sub-plan {
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+
+    .sub-price-block {
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    .sub-price {
+      font-size: 1.25rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    .sub-period {
+      font-size: 0.7rem;
+      color: var(--muted);
+    }
+
+    .sub-card-bottom {
+      padding: 0.875rem 1.25rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .sub-renewal {
+      font-size: 0.75rem;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 0.375rem;
+    }
+
+    .sub-renewal .icon { font-size: 0.8rem; }
+
+    .badge {
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 0.2rem 0.6rem;
+      border-radius: 20px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .badge.active { background: rgba(70,211,105,0.15); color: var(--green); }
+    .badge.trial  { background: rgba(245,197,24,0.15);  color: var(--yellow); }
+    .badge.paused { background: rgba(160,160,160,0.15); color: var(--muted); }
+
+    /* ── UPCOMING ROW ── */
+    .upcoming-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .upcoming-item {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      transition: background 0.2s;
+    }
+
+    .upcoming-item:hover { background: var(--card-hover); }
+
+    .upcoming-date {
+      width: 48px;
+      height: 48px;
+      border-radius: 10px;
+      background: var(--bg3);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .upcoming-date .day {
+      font-size: 1.1rem;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .upcoming-date .month {
+      font-size: 0.6rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .upcoming-meta { flex: 1; }
+    .upcoming-name { font-weight: 600; font-size: 0.9rem; }
+    .upcoming-desc { font-size: 0.75rem; color: var(--muted); margin-top: 0.1rem; }
+
+    .upcoming-amount {
+      font-weight: 800;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+
+    .days-badge {
+      font-size: 0.7rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: 10px;
+      font-weight: 600;
+    }
+
+    .days-badge.soon  { background: rgba(229,9,20,0.15); color: var(--accent); }
+    .days-badge.later { background: rgba(74,158,255,0.15); color: var(--blue); }
+
+    /* ── PROGRESS BAR ── */
+    .spend-bar {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.25rem;
+      margin-bottom: 1rem;
+    }
+
+    .spend-bar-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+      font-size: 0.875rem;
+    }
+
+    .spend-bar-header .label { color: var(--muted); }
+    .spend-bar-header .value { font-weight: 700; }
+
+    .bar-track {
+      background: var(--bg3);
+      border-radius: 4px;
+      height: 6px;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      border-radius: 4px;
+      background: linear-gradient(90deg, var(--accent), var(--purple));
+      transition: width 0.8s ease;
+    }
+
+    .category-bars { display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1rem; }
+
+    .cat-row {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.8rem;
+    }
+
+    .cat-name { width: 90px; color: var(--muted); flex-shrink: 0; }
+    .cat-bar-wrap { flex: 1; background: var(--bg3); border-radius: 4px; height: 4px; }
+    .cat-bar { height: 100%; border-radius: 4px; }
+    .cat-amount { width: 50px; text-align: right; font-weight: 600; flex-shrink: 0; }
+
+    /* ── FOOTER ── */
+    footer {
+      text-align: center;
+      padding: 2rem 4%;
+      font-size: 0.75rem;
+      color: #555;
+      border-top: 1px solid var(--border);
+      margin-top: 1rem;
+    }
+
+    /* ── MOBILE NAV ── */
+    .mobile-menu {
+      display: none;
+      flex-direction: column;
+      position: fixed;
+      top: 64px; left: 0; right: 0;
+      background: #000;
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 4%;
+      z-index: 99;
+      gap: 0.75rem;
+    }
+
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a { text-decoration: none; color: var(--muted); font-size: 0.9rem; padding: 0.5rem 0; }
+    .mobile-menu a.active { color: var(--text); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      .stats-row { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 640px) {
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+      .stats-row { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
+      .hero { padding: 2rem 4% 1.5rem; }
+      .stat-value { font-size: 1.4rem; }
+      .sub-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 380px) {
+      .stats-row { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav>
+  <div class="nav-logo">Flow<span>munity</span></div>
+  <ul class="nav-links">
+    <li><a href="#" class="active">Dashboard</a></li>
+    <li><a href="#">Descubrir</a></li>
+    <li><a href="#">Analíticas</a></li>
+    <li><a href="#">Configuración</a></li>
+  </ul>
+  <div class="nav-right">
+    <div class="nav-avatar">TR</div>
+    <button class="hamburger" onclick="toggleMenu()" aria-label="Menú">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#" class="active">Dashboard</a>
+  <a href="#">Descubrir</a>
+  <a href="#">Analíticas</a>
+  <a href="#">Configuración</a>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <p class="hero-greeting">Bienvenida de nuevo,</p>
+  <h1 class="hero-title">Teresa <span>Recasens</span></h1>
+  <p class="hero-subtitle">Tienes 8 suscripciones activas · Próximo cargo en 3 días</p>
+</section>
+
+<!-- STATS -->
+<div class="stats-row">
+  <div class="stat-card red">
+    <div class="stat-label">Gasto mensual</div>
+    <div class="stat-value">€84,97</div>
+    <div class="stat-sub">↑ €6,99 vs mes anterior</div>
+  </div>
+  <div class="stat-card green">
+    <div class="stat-label">Activas</div>
+    <div class="stat-value">8</div>
+    <div class="stat-sub">2 en período de prueba</div>
+  </div>
+  <div class="stat-card blue">
+    <div class="stat-label">Gasto anual</div>
+    <div class="stat-value">€1.019</div>
+    <div class="stat-sub">Estimado este año</div>
+  </div>
+  <div class="stat-card purple">
+    <div class="stat-label">Próximo cargo</div>
+    <div class="stat-value">3d</div>
+    <div class="stat-sub">Netflix · €15,99</div>
+  </div>
+</div>
+
+<!-- SUBSCRIPTIONS -->
+<section class="section">
+  <div class="section-header">
+    <div class="section-title">
+      <div class="dot"></div>
+      Mis suscripciones
+    </div>
+    <a href="#" class="see-all">Ver todas ›</a>
+  </div>
+
+  <div class="filter-tabs">
+    <button class="tab active" onclick="filterSubs(this, 'all')">Todas</button>
+    <button class="tab" onclick="filterSubs(this, 'entretenimiento')">Entretenimiento</button>
+    <button class="tab" onclick="filterSubs(this, 'musica')">Música</button>
+    <button class="tab" onclick="filterSubs(this, 'software')">Software</button>
+    <button class="tab" onclick="filterSubs(this, 'otros')">Otros</button>
+  </div>
+
+  <div class="sub-grid" id="subGrid">
+
+    <div class="sub-card" data-cat="entretenimiento">
+      <div class="sub-card-top">
+        <div class="sub-logo" style="background:linear-gradient(135deg,#e50914,#b20710)">N</div>
+        <div class="sub-info">
+          <div class="sub-name">Netflix</div>
+          <div class="sub-plan">Plan Estándar · 2 pantallas</div>
+        </div>
+        <div class="sub-price-block">
+          <div class="sub-price">€15,99</div>
+          <div class="sub-period">/mes</div>
+        </div>
+      </div>
+      <div class="sub-card-bottom">
+        <div class="sub-renewal">
+          <span class="icon">↻</span> Renueva el 29 mar
+        </div>
+        <span class="badge active">Activa</span>
+      </div>
+    </div>
+
+    <div class="sub-card" data-cat="musica">
+      <div class="sub-card-top">
+        <div class="sub-logo" style="background:linear-gradient(135deg,#1db954,#157a38)">S</div>
+        <div class="sub-info">
+          <div class="sub-name">Spotify</div>
+          <div class="sub-plan">Premium Individual</div>
+        </div>
+        <div class="sub-price-block">
+          <div class="sub-price">€10,99</div>
+          <div class="sub-period">/mes</div>
+        </div>
+      </div>
+      <div class="sub-card-bottom">
+        <div class="sub-renewal">
+          <span class="icon">↻</span> Renueva el 5 abr
+        </div>
+        <span class="badge active">Activa</span>
+      </div>
+    </div>
+
+    <div class="sub-card" data-cat="entretenimiento">
+      <div class="sub-card-top">
+        <div class="sub-logo" style="background:linear-gradient(135deg,#00a8e1,#00668f)">D+</div>
+        <div class="sub-info">
+          <div class="sub-name">Disney+</div>
+          <div class="sub-plan">Plan Premium</div>
+        </div>
+        <div class="sub-price-block">
+          <div class="sub-price">€13,99</div>
+          <div class="sub-period">/mes</div>
+        </div>
+      </div>
+      <div class="sub-card-bottom">
+        <div class="sub-renewal">
+          <span class="icon">↻</span> Renueva el 12 abr
+        </div>
+        <span class="badge active">Activa</span>
+      </div>
+    </div>
+
+    <div class="sub-card" data-cat="software">
+      <div class="sub-card-top">
+        <div class="sub-logo" style="background:linear-gradient(135deg,#ff9900,#cc7700)">A</div>
+        <div class="sub-info">
+          <div class="sub-name">Adobe CC</div>
+          <div class="sub-plan">Individual · Todas las apps</div>
+        </div>
+        <div class="sub-price-block">
+          <div class="sub-price">€29,99</div>
+          <div class="sub-period">/mes</div>
+        </div>
+      </div>
+      <div class="sub-card-bottom">
+        <div class="sub-renewal">
+          <span class="icon">↻</span> Renueva el 1 abr
+        </div>
+        <span class="badge active">Activa</span>
+      </div>
+    </div>
+
+    <div class="sub-card" data-cat="entretenimiento">
+      <div class="sub-card-top">
+        <div class="sub-logo" style="background:linear-gradient(135deg,#00b4d4,#006e85)">Tw</div>
+        <div class="sub-info">
+          <div class="sub-name">Twitch</div>
+          <div class="sub-plan">Turbo</div>
+        </div>
+        <div class="sub-price-block">
+          <div class="sub-price">€8,99</div>
+          <div class="sub-period">/mes</div>
+        </div>
+      </div>
+      <div class="sub-card-bottom">
+        <div class="sub-renewal">
+          <span class="icon">↻</span> Renueva el 17 abr
+        </div>
+        <span class="badge trial">Prueba</span>
+      </div>
+    </div>
+
+    <div class="sub-card" data-cat="musica">
+      <div class="sub-card-top">
+        <div class="sub-logo" style="background:linear-gradient(135deg,#fa243c,#c41a32)">Ti</div>
+        <div class="sub-info">
+          <div class="sub-name">Tidal</div>
+          <div class="sub-plan">HiFi Plus</div>
+        </div>
+        <div class="sub-price-block">
+          <div class="sub-price">€10,99</div>
+          <div class="sub-period">/mes</div>
+        </div>
+      </div>
+      <div class="sub-card-bottom">
+        <div class="sub-renewal">
+          <span class="icon">↻</span> Renueva el 22 abr
+        </div>
+        <span class="badge trial">Prueba</span>
+      </div>
+    </div>
+
+    <div class="sub-card" data-cat="software">
+      <div class="sub-card-top">
+        <div class="sub-logo" style="background:linear-gradient(135deg,#4a9eff,#2b6bcb)">No</div>
+        <div class="sub-info">
+          <div class="sub-name">Notion</div>
+          <div class="sub-plan">Plus · Uso personal</div>
+        </div>
+        <div class="sub-price-block">
+          <div class="sub-price">€9,60</div>
+          <div class="sub-period">/mes</div>
+        </div>
+      </div>
+      <div class="sub-card-bottom">
+        <div class="sub-renewal">
+          <span class="icon">↻</span> Renueva el 8 abr
+        </div>
+        <span class="badge active">Activa</span>
+      </div>
+    </div>
+
+    <div class="sub-card" data-cat="otros">
+      <div class="sub-card-top">
+        <div class="sub-logo" style="background:linear-gradient(135deg,#7952b3,#5c3a8a)">Du</div>
+        <div class="sub-info">
+          <div class="sub-name">Duolingo</div>
+          <div class="sub-plan">Super · Sin anuncios</div>
+        </div>
+        <div class="sub-price-block">
+          <div class="sub-price">€6,99</div>
+          <div class="sub-period">/mes</div>
+        </div>
+      </div>
+      <div class="sub-card-bottom">
+        <div class="sub-renewal">
+          <span class="icon">↻</span> Pausada
+        </div>
+        <span class="badge paused">Pausada</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- UPCOMING CHARGES -->
+<section class="section">
+  <div class="section-header">
+    <div class="section-title">
+      <div class="dot"></div>
+      Próximos cargos
+    </div>
+  </div>
+
+  <div class="upcoming-list">
+
+    <div class="upcoming-item">
+      <div class="upcoming-date">
+        <div class="day">29</div>
+        <div class="month">Mar</div>
+      </div>
+      <div class="upcoming-meta">
+        <div class="upcoming-name">Netflix</div>
+        <div class="upcoming-desc">Plan Estándar · Renovación mensual</div>
+      </div>
+      <span class="days-badge soon">3 días</span>
+      <div class="upcoming-amount">€15,99</div>
+    </div>
+
+    <div class="upcoming-item">
+      <div class="upcoming-date">
+        <div class="day">1</div>
+        <div class="month">Abr</div>
+      </div>
+      <div class="upcoming-meta">
+        <div class="upcoming-name">Adobe CC</div>
+        <div class="upcoming-desc">Individual · Todas las apps</div>
+      </div>
+      <span class="days-badge soon">6 días</span>
+      <div class="upcoming-amount">€29,99</div>
+    </div>
+
+    <div class="upcoming-item">
+      <div class="upcoming-date">
+        <div class="day">5</div>
+        <div class="month">Abr</div>
+      </div>
+      <div class="upcoming-meta">
+        <div class="upcoming-name">Spotify</div>
+        <div class="upcoming-desc">Premium Individual · Renovación mensual</div>
+      </div>
+      <span class="days-badge later">10 días</span>
+      <div class="upcoming-amount">€10,99</div>
+    </div>
+
+    <div class="upcoming-item">
+      <div class="upcoming-date">
+        <div class="day">8</div>
+        <div class="month">Abr</div>
+      </div>
+      <div class="upcoming-meta">
+        <div class="upcoming-name">Notion</div>
+        <div class="upcoming-desc">Plus · Uso personal</div>
+      </div>
+      <span class="days-badge later">13 días</span>
+      <div class="upcoming-amount">€9,60</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- SPEND BREAKDOWN -->
+<section class="section">
+  <div class="section-header">
+    <div class="section-title">
+      <div class="dot"></div>
+      Desglose de gasto
+    </div>
+  </div>
+
+  <div class="spend-bar">
+    <div class="spend-bar-header">
+      <span class="label">Presupuesto mensual</span>
+      <span class="value">€84,97 / €100,00</span>
+    </div>
+    <div class="bar-track">
+      <div class="bar-fill" style="width: 85%"></div>
+    </div>
+
+    <div class="category-bars">
+      <div class="cat-row">
+        <div class="cat-name">Entretenimiento</div>
+        <div class="cat-bar-wrap">
+          <div class="cat-bar" style="width:45%; background:var(--accent)"></div>
+        </div>
+        <div class="cat-amount">€38,97</div>
+      </div>
+      <div class="cat-row">
+        <div class="cat-name">Software</div>
+        <div class="cat-bar-wrap">
+          <div class="cat-bar" style="width:47%; background:var(--blue)"></div>
+        </div>
+        <div class="cat-amount">€39,59</div>
+      </div>
+      <div class="cat-row">
+        <div class="cat-name">Música</div>
+        <div class="cat-bar-wrap">
+          <div class="cat-bar" style="width:26%; background:var(--green)"></div>
+        </div>
+        <div class="cat-amount">€21,98</div>
+      </div>
+      <div class="cat-row">
+        <div class="cat-name">Otros</div>
+        <div class="cat-bar-wrap">
+          <div class="cat-bar" style="width:8%; background:var(--purple)"></div>
+        </div>
+        <div class="cat-amount">€6,99</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  © 2026 Flowmunity · Gestiona tus suscripciones de forma inteligente
+</footer>
+
+<script>
+  function toggleMenu() {
+    document.getElementById('mobileMenu').classList.toggle('open');
+  }
+
+  function filterSubs(btn, cat) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+
+    const cards = document.querySelectorAll('.sub-card');
+    cards.forEach(card => {
+      const show = cat === 'all' || card.dataset.cat === cat;
+      card.style.display = show ? 'block' : 'none';
+    });
+  }
+
+  // Close mobile menu when clicking outside
+  document.addEventListener('click', function(e) {
+    const menu = document.getElementById('mobileMenu');
+    const ham  = document.querySelector('.hamburger');
+    if (!menu.contains(e.target) && !ham.contains(e.target)) {
+      menu.classList.remove('open');
+    }
+  });
+</script>
+</body>
+</html>
